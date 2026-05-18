@@ -21,6 +21,11 @@ export const siteContent = {
   voteInputLabel: process.env.NEXT_PUBLIC_VOTE_INPUT_LABEL || 'Nama Lengkap Anda',
   voteInputPlaceholder: process.env.NEXT_PUBLIC_VOTE_INPUT_PLACEHOLDER || 'Contoh: Nunu Dwijaya',
   paymentButtonPrefix: process.env.NEXT_PUBLIC_PAYMENT_BUTTON_PREFIX || 'Bayar via QRIS',
+  testPayButtonLabel: process.env.NEXT_PUBLIC_TEST_PAY_BUTTON_LABEL || 'Test Pay Auto Approve',
+  testPayHelperText:
+    process.env.NEXT_PUBLIC_TEST_PAY_HELPER_TEXT ||
+    'Mode test sandbox: sekali klik langsung tersimpan sebagai vote approved.',
+  enableMidtransTestApproval: process.env.NEXT_PUBLIC_ENABLE_MIDTRANS_TEST_APPROVAL === 'true',
   adminDashboardTitle: process.env.NEXT_PUBLIC_ADMIN_DASHBOARD_TITLE || 'Admin Monitoring',
   adminDashboardSubtitle:
     process.env.NEXT_PUBLIC_ADMIN_DASHBOARD_SUBTITLE ||

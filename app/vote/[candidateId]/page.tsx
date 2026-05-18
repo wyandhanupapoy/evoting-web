@@ -31,6 +31,20 @@ export default function VoteForm({ params }: { readonly params: Promise<{ candid
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [votePrice, setVotePrice] = useState(siteContent.votePrice);
   const isProduction = process.env.NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION === 'true';
+  const enableTestApproval = siteContent.enableMidtransTestApproval && !isProduction;
+
+  const recordApprovedVote = async () => {
+    await supabase.from('votes').insert([
+      {
+        voter_name: name,
+        candidate_id: candidateId,
+        status: 'approved',
+        proof_url: enableTestApproval ? 'TEST AUTO APPROVE' : 'Midtrans QRIS',
+      },
+    ]);
+
+    await supabase.rpc('increment_vote', { cand_id: candidateId });
+  };
 
   // Load script Midtrans Snap saat halaman dimuat
   useEffect(() => {
@@ -123,16 +137,7 @@ export default function VoteForm({ params }: { readonly params: Promise<{ candid
         onSuccess: async () => {
           toast.success('Pembayaran Berhasil! Memproses vote...');
 
-          await supabase.from('votes').insert([
-            {
-              voter_name: name,
-              candidate_id: candidateId,
-              status: 'approved',
-              proof_url: 'Midtrans QRIS',
-            },
-          ]);
-
-          await supabase.rpc('increment_vote', { cand_id: candidateId });
+          await recordApprovedVote();
 
           toast.success('Vote berhasil ditambahkan!');
           setTimeout(() => router.push('/'), 2000);
@@ -150,6 +155,29 @@ export default function VoteForm({ params }: { readonly params: Promise<{ candid
       });
     } catch (error: unknown) {
       toast.error(`Terjadi kesalahan: ${error instanceof Error ? error.message : 'Terjadi kesalahan.'}`, { id: loadingToast });
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleTestApprove = async () => {
+    if (!name) {
+      toast.error('Silakan isi nama Anda terlebih dahulu!');
+      return;
+    }
+
+    setIsSubmitting(true);
+    const loadingToast = toast.loading('Mode test: auto approve...');
+
+    try {
+      await recordApprovedVote();
+      toast.success('Test Pay berhasil: vote langsung approved.', { id: loadingToast });
+      setTimeout(() => router.push('/'), 1500);
+    } catch (error: unknown) {
+      toast.error(
+        `Gagal auto approve: ${error instanceof Error ? error.message : 'Terjadi kesalahan.'}`,
+        { id: loadingToast }
+      );
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -192,6 +220,21 @@ export default function VoteForm({ params }: { readonly params: Promise<{ candid
           >
             {isSubmitting ? 'Memproses...' : `${siteContent.paymentButtonPrefix} (${formatRupiah(votePrice)})`}
           </button>
+
+          {enableTestApproval && (
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">Mode Test</p>
+              <p className="mt-1 text-xs text-amber-800">{siteContent.testPayHelperText}</p>
+              <button
+                type="button"
+                onClick={handleTestApprove}
+                disabled={isSubmitting}
+                className="mt-3 w-full rounded-lg bg-amber-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-amber-600 disabled:cursor-not-allowed disabled:bg-amber-300"
+              >
+                {isSubmitting ? 'Memproses...' : siteContent.testPayButtonLabel}
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>
