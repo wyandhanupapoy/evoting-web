@@ -16,6 +16,51 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## UI/UX Customization (Adjustable Content)
+
+Konten utama halaman publik sekarang bisa diatur dari `.env.local` tanpa ubah komponen satu per satu.
+
+Gunakan variabel berikut:
+
+- `NEXT_PUBLIC_APP_NAME`
+- `NEXT_PUBLIC_HERO_BADGE`
+- `NEXT_PUBLIC_HERO_TITLE`
+- `NEXT_PUBLIC_HERO_SUBTITLE`
+- `NEXT_PUBLIC_VOTE_BUTTON_LABEL`
+- `NEXT_PUBLIC_CANDIDATE_SECTION_TITLE`
+- `NEXT_PUBLIC_VOTE_UNIT_LABEL`
+- `NEXT_PUBLIC_VOTE_PRICE`
+- `NEXT_PUBLIC_VOTE_FORM_TITLE`
+- `NEXT_PUBLIC_VOTE_FORM_DESCRIPTION`
+- `NEXT_PUBLIC_VOTE_INPUT_LABEL`
+- `NEXT_PUBLIC_VOTE_INPUT_PLACEHOLDER`
+- `NEXT_PUBLIC_PAYMENT_BUTTON_PREFIX`
+- `NEXT_PUBLIC_ADMIN_DASHBOARD_TITLE`
+- `NEXT_PUBLIC_ADMIN_DASHBOARD_SUBTITLE`
+- `NEXT_PUBLIC_CANDIDATE_IMAGE_MAX_MB`
+- `NEXT_PUBLIC_CANDIDATE_IMAGE_MAX_WIDTH`
+- `NEXT_PUBLIC_CANDIDATE_IMAGE_MAX_HEIGHT`
+
+Mode Midtrans juga disamakan antara server dan client:
+
+- `MIDTRANS_IS_PRODUCTION`
+- `NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION`
+
+Setelah mengubah `.env.local`, restart dev server.
+
+## Pengaturan Biaya Vote oleh Admin
+
+Dashboard admin sekarang bisa mengubah biaya per vote secara langsung.
+
+Agar fitur ini berjalan, buat tabel `app_settings` di Supabase dengan script:
+
+- `supabase/app_settings.sql`
+
+Nilai yang dipakai sistem:
+
+- key: `vote_price`
+- value: angka Rupiah (contoh `10000`)
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
